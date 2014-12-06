@@ -8,7 +8,7 @@ exports.config = {
   chromeDriver: './selenium/chromedriver',
 
   //To connect to a Selenium Server which is already running
-  seleniumAddress: null,
+  seleniumAddress: 'http://127.0.0.1:4444/wd/hub',
 
   //To use remote browsers via Sauce Labs
   sauceUser: null,
@@ -49,7 +49,18 @@ exports.config = {
     exclude: ['spec/doNotRunInChromeSpec.js']
   },
 
-  multiCapabilities: [],
+  multiCapabilities: [{
+    'browserName': 'chrome',
+    'count': 1,
+    'shardTestFiles': false,
+    'maxInstances': 1,
+    } , {
+    'browserName': 'firefox',
+    'count': 2,
+    'shardTestFiles': false,
+    'maxInstances': 1,
+    }
+  ],
 
   //Maximum number of total browser sessions to run at the sme time
 
