@@ -15,7 +15,7 @@ describe('user', function (){
 
     expect(element(by.binding('error')).isPresent()).toBeTruthy();
 
-    element(by.id('password')).sendKeys('goFuckYourMotherTwice!!!');
+    element(by.id('password')).sendKeys('iamareallylongpassword*1A');
     element(by.id('submitButton')).click();
 
     expect(element(by.id('congratsMessage')).isPresent()).toBeTruthy()
