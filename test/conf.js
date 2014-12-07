@@ -6,7 +6,7 @@ exports.config = {
 
   sauceUser: 'peterjhendrick',
   sauceKey: '472182a1-95b3-41e4-8068-e120321a1da9',
-  sauceSeleniumAddress: null,
+  //sauceSeleniumAddress: null,
 
   specs: [
     'spec.js'
