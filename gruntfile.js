@@ -139,6 +139,58 @@ module.exports = function(grunt) {
 			unit: {
 				configFile: 'karma.conf.js'
 			}
+		},
+		connect: {
+			options: {
+				port: 5000,
+				hostname: 'localhost'
+			},
+			runtime: {
+				options: {
+					middleware: function (connect) {
+						return [
+						lrSnippet,
+						mountFolder(connect, 'instrumented'),
+						mountFolder(connect, '.......')
+						];
+					}
+				}
+			}
+		},
+		instrument: {
+			files: 'doorways/**/*.js',
+			options: {
+				lazy: true,
+				basePath: "instrumented"
+			}
+		},
+		protractor_coverage: {
+			options: {
+				keepAlive: true,
+				noColor: false,
+				coverageDir: 'test/coverage',
+				args: {
+					baseUrl: 'http://localhost:5000'
+				}
+			},
+			local: {
+				options: {
+					configFile: 'test.conf'
+				}
+			},
+			// travis: {
+			// 	options: {
+			// 		configFile: 'path/to/protractor-travis.conf.js'
+			// 	}
+			// }
+		},
+		makeReport: {
+			src: 'test/coverage/*.json',
+			options: {
+				type: 'lcov',
+				dir: 'test/coverage',
+				print: 'detail'
+			}
 		}
 	});
 
