@@ -69,6 +69,7 @@
     "grunt-nodemon": "~0.3.0",
     "grunt-protractor-coverage": "^0.2.13",
     "grunt-protractor-runner": "^1.1.4",
+    "jasmine-reporters": "^1.0.1",
     "karma": "~0.12.0",
     "karma-chrome-launcher": "~0.1.2",
     "karma-coverage": "~0.2.0",

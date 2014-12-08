@@ -1,5 +1,11 @@
 exports.config = {
 
+  onPrepare: function() {
+    require('jasmine-reporters');
+    jasmine.getEnv().addReporter(
+      new jasmine.JUnitXmlReporter('protractoroutput', true, true));
+    },
+
   seleniumServerJar: 'C:/Users/Peter/openSource/node_modules/protractor/selenium/selenium-server-standalone-2.44.0.jar',
   //seleniumPort: '4444',
   //seleniumArgs: ['start'],
