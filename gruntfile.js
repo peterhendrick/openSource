@@ -142,7 +142,7 @@ module.exports = function(grunt) {
 		},
 		connect: {
 			options: {
-				port: 5000,
+				port: 3000,
 				hostname: 'localhost'
 			},
 			runtime: {
