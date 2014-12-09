@@ -139,11 +139,85 @@ module.exports = function(grunt) {
 			unit: {
 				configFile: 'karma.conf.js'
 			}
-		}
+		},
+		clean: {
+			tests: ['tmp', 'build', 'instrumented', 'coverage', 'reports'],
+		},
+		connect: {
+			server: {
+				options: {
+					port: 3000,
+					base: 'instrumented/resources/app/angularjs'
+				}
+			},
+		},
+		// Configuration to be run (and then tested).
+		protractor_coverage: {
+			options: {
+				configFile: 'test/conf.js', // Default config file
+				keepAlive: true, // If false, the grunt process stops when the test fails.
+				noColor: false, // If true, protractor will not use colors in its output.
+				coverageDir: 'coverage',
+				args: {}
+			},
+			local: {
+				options: {
+					configFile: 'test/conf.js',
+				}
+			},
+			remote: {
+			  options: {
+			    configFile: 'test/protractorConf.remote.js', // Default config file
+			  }
+			}
+		},
+		copy: {
+			'instrument': {
+				files: [{
+					src: ['app/**/*', 'app/**/*.js'],
+					dest: 'instrumented/'
+				}]
+			},
+		},
+		instrument: {
+			files: 'app/**/*.js',
+			options: {
+				lazy: true,
+				basePath: 'instrumented/'
+			}
+		},
+		makeReport: {
+			src: 'coverage/**/*.json',
+			options: {
+				type: 'lcov',
+				dir: 'reports',
+				print: 'detail'
+			}
+		},
+
+		// Unit tests.
+		nodeunit: {
+			tests: ['test/*_test.js'],
+		},
+		coveralls: {
+			main:{
+				src: 'reports/**/*.info',
+				options: {
+					force: true
+				},
+			},
+		},
 	});
 
 	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-nodeunit');
+	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-connect');
+	grunt.loadNpmTasks('grunt-istanbul');
+	grunt.loadNpmTasks('grunt-coveralls');
 
 	// Making grunt default to force in order not to break the project.
 	grunt.option('force', true);
@@ -158,7 +232,7 @@ module.exports = function(grunt) {
 	});
 
 	// Default task(s).
-	grunt.registerTask('default', ['lint', 'concurrent:default']);
+	grunt.registerTask('default', ['lint', 'concurrent:default', 'test']);
 
 	// Debug task.
 	grunt.registerTask('debug', ['lint', 'concurrent:debug']);
@@ -173,5 +247,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
 	// Test task.
-	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit', 'clean', 'copy', 'instrument', 'connect:server', 'protractor_coverage:local', 'makeReport', 'coveralls']);
+  grunt.registerTask('test-remote', ['clean', 'copy', 'instrument', 'connect:server', 'protractor_coverage:remote', 'makeReport', 'coveralls']);
 };

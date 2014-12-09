@@ -1,6 +1,6 @@
 exports.config = {
 
-  seleniumServerJar: 'C:/Users/Peter/mostesting/mean/node_modules/protractor/bin/webdriver-manager',
+  //seleniumServerJar: 'C:/Users/Peter/mostesting/mean/node_modules/protractor/bin/webdriver-manager',
 
   seleniumAddress: 'http://127.0.0.1:4444/wd/hub',
 
