@@ -132,7 +132,12 @@ exports.config = {
   // If you would like to run more than one instance of WebDriver on the same
   // tests, use multiCapabilities, which takes an array of capabilities.
   // If this is specified, capabilities will be ignored.
-  multiCapabilities: [],
+    multiCapabilities: [{
+    'browserName': 'firefox'
+  }, {
+    'browserName': 'chrome'
+  }],
+
 
   // Maximum number of total browser sessions to run. Tests are queued in
   // sequence if number of browser sessions is limited by this parameter.
