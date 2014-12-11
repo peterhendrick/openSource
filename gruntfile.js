@@ -53,9 +53,9 @@ module.exports = function(grunt) {
 			all: {
 				src: [
 					'watchFiles.clientJS.concat(watchFiles.serverJS)',
-					'Gruntfile.js',
-					'tasks/*.js',
-					'<%= nodeunit.tests %>',
+					'gruntfile.js',
+					// 'tasks/*.js',
+					// '<%= nodeunit.tests %>',
 					],
 				options: {
 					jshintrc: '.jshintrc'
@@ -172,7 +172,7 @@ module.exports = function(grunt) {
 		// Configuration to be run (and then tested).
 		protractor_coverage: {
 			options: {
-				configFile: "test/protractorConf.js", // Default config file
+				configFile: 'test/protractorConf.js', // Default config file
 				keepAlive: true, // If false, the grunt process stops when the test fails.
 				noColor: false, // If true, protractor will not use colors in its output.
 				coverageDir: 'coverage',
@@ -189,7 +189,7 @@ module.exports = function(grunt) {
 			},
 			remote: {
 				options: {
-					configFile: "test/protractorConf.remote.js", // Default config file
+					configFile: 'test/protractorConf.remote.js', // Default config file
 					args: {
 						baseUrl: 'http://localhost:3000/',
 						// Arguments passed to the command
@@ -210,7 +210,7 @@ module.exports = function(grunt) {
 			files: 'resources/app/**/*.js',
 			options: {
 				lazy: true,
-				basePath: "instrumented"
+				basePath: 'instrumented'
 			}
 		},
 		makeReport: {
