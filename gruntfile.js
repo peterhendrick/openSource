@@ -51,11 +51,26 @@ module.exports = function(grunt) {
 		},
 		jshint: {
 			all: {
-				src: watchFiles.clientJS.concat(watchFiles.serverJS),
+				src: [
+					'watchFiles.clientJS.concat(watchFiles.serverJS)',
+					'Gruntfile.js',
+					'tasks/*.js',
+					'<%= nodeunit.tests %>',
+					],
 				options: {
-					jshintrc: true
-				}
-			}
+					jshintrc: '.jshintrc'
+				},
+			},
+			// jshint: {
+			// 	all: [
+			// 	'Gruntfile.js',
+			// 	'tasks/*.js',
+			// 	'<%= nodeunit.tests %>',
+			// 	],
+			// 	options: {
+			// 		jshintrc: '.jshintrc',
+			// 	},
+			// },
 		},
 		csslint: {
 			options: {
@@ -140,62 +155,96 @@ module.exports = function(grunt) {
 				configFile: 'karma.conf.js'
 			}
 		},
+
+
+		// Before generating any new files, remove any previously-created files.
+		clean: {
+			tests: ['tmp', 'build', 'instrumented', 'coverage', 'reports'],
+		},
 		connect: {
-			options: {
-				port: 9000,
-				hostname: 'localhost'
-			},
-			runtime: {
+			server: {
 				options: {
-					middleware: function (connect) {
-						return [
-						lrSnippet,
-						mountFolder(connect, 'instrumented'),
-						mountFolder(connect, '.......')
-						];
+					port: 3000,
+					base: 'instrumented/resources/app/angularjs'
+				}
+			},
+		},
+		// Configuration to be run (and then tested).
+		protractor_coverage: {
+			options: {
+				configFile: "test/protractorConf.js", // Default config file
+				keepAlive: true, // If false, the grunt process stops when the test fails.
+				noColor: false, // If true, protractor will not use colors in its output.
+				coverageDir: 'coverage',
+				args: {}
+			},
+			local: {
+				options: {
+					args: {
+						baseUrl: 'http://localhost:3000/',
+						// Arguments passed to the command
+						'browser': 'chrome'
 					}
 				}
-			}
+			},
+			remote: {
+				options: {
+					configFile: "test/protractorConf.remote.js", // Default config file
+					args: {
+						baseUrl: 'http://localhost:3000/',
+						// Arguments passed to the command
+						'browser': 'chrome'
+					}
+				}
+			},
+		},
+		copy: {
+			'instrument': {
+				files: [{
+					src: ['resources/app/**/*', '!resources/app/**/*.js'],
+					dest: 'instrumented/'
+				}]
+			},
 		},
 		instrument: {
-			files: 'doorways/**/*.js',
+			files: 'resources/app/**/*.js',
 			options: {
 				lazy: true,
 				basePath: "instrumented"
 			}
 		},
-		protractor_coverage: {
-			options: {
-				keepAlive: true,
-				noColor: false,
-				coverageDir: 'test/coverage',
-				args: {
-					baseUrl: 'http://localhost:5000'
-				}
-			},
-			local: {
-				options: {
-					configFile: 'test.conf'
-				}
-			},
-			// travis: {
-			// 	options: {
-			// 		configFile: 'path/to/protractor-travis.conf.js'
-			// 	}
-			// }
-		},
 		makeReport: {
-			src: 'test/coverage/*.json',
+			src: 'coverage/**/*.json',
 			options: {
-				type: 'lcov',
-				dir: 'test/coverage',
+				type: 'html',
+				dir: 'reports',
 				print: 'detail'
 			}
-		}
+		},
+
+		// Unit tests.
+		nodeunit: {
+			tests: ['test/*_test.js'],
+		},
+		coveralls: {
+			main:{
+				src: 'reports/**/*.info',
+				options: {
+					force: true
+				},
+			},
+		},
 	});
 
 	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-nodeunit');
+	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-connect');
+	grunt.loadNpmTasks('grunt-istanbul');
+	grunt.loadNpmTasks('grunt-coveralls');
 
 	// Making grunt default to force in order not to break the project.
 	grunt.option('force', true);
@@ -225,5 +274,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
 	// Test task.
-	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit', 'clean', 'copy', 'instrument', 'connect:server', 'protractor_coverage:local', 'makeReport', 'coveralls']);
+	grunt.registerTask('test-remote', ['clean', 'copy', 'instrument', 'connect:server', 'protractor_coverage:remote', 'makeReport', 'coveralls']);
+
 };
