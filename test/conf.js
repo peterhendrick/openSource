@@ -9,7 +9,7 @@ exports.config = {
   // sauceSeleniumAddress: null,
 
   specs: [
-    './spec.js'
+    './**/*_spec.js'
   ],
 
   capabilities: {

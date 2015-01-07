@@ -53,3 +53,7 @@ local.properties
 *.swp
 logs/
 build/
+
+coverage/
+instrumented/
+reports/
