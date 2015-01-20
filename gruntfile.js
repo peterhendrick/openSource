@@ -140,22 +140,7 @@ module.exports = function(grunt) {
 				configFile: 'karma.conf.js'
 			}
 		},
-		protractor: {
-			options: {
-				//configFile: 'test/conf.js', // Default config file
-				// keepAlive: true, // If false, the grunt process stops when the test fails.
-				// noColor: false, // If true, protractor will not use colors in its output.
-				args: {
-					// Arguments passed to the command
-				}
-			},
-			your_target: {   // Grunt requires at least one target to run so you can simply put 'all: {}' here too.
-				options: {
-					configFile: 'protractorConf.js', // Target-specific config file
-					args: {} // Target-specific arguments
-				}
-			},
-		},
+
 	});
 
 	// Load NPM tasks
@@ -189,5 +174,5 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
 	// Test task.
-	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit', 'protractor']);
+	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
 };
