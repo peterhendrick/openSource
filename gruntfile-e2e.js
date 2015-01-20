@@ -46,6 +46,8 @@ module.exports = function(grunt) {
         }
       },
     },
+
+    
     // Configuration to be run (and then tested).
     protractor_coverage: {
       options: {
